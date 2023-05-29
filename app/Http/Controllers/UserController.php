@@ -43,7 +43,7 @@ class UserController extends Controller
             'name' => 'required',
             'email' => 'required|email|unique:users,email',
             'password' => 'required',
-            'roles_name' => 'required'
+            // 'roles_name' => 'required'
         ]);
 
         $input = $request->all();
@@ -92,7 +92,7 @@ class UserController extends Controller
             'name' => 'required',
             'email' => 'required|email|unique:users,email,' . $request->id,
             'password' => 'same:confirm-password',
-            'roles_name' => 'required'
+            // 'roles_name' => 'required'
         ]);
         $input = $request->all();
         if (!empty($input['password'])) {
