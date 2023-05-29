@@ -8,6 +8,8 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\InvoiceDetailsController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SectionController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\RoleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -100,3 +102,31 @@ Route::post('/delete_file', [InvoiceDetailsController::class, 'delete_file'])->n
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+
+
+Route::group(['middleware' => ['auth']], function() {
+    
+    Route::get('/show_users', [UserController::class, 'show_users'])->name('show_users')->middleware('permission:المستخدمين');
+    Route::get('/create_user', [UserController::class, 'create_user'])->name('create_user');
+    Route::post('/store_user', [UserController::class, 'store_user'])->name('store_user');
+    Route::get('/edit_user/{id}', [UserController::class, 'edit_user'])->name('edit_user');
+    Route::post('/user_delete', [UserController::class, 'user_delete'])->name('user_delete');
+    Route::post('/update_user', [UserController::class, 'update_user'])->name('update_user');
+
+    
+    Route::get('/show_roles', [RoleController::class, 'show_roles'])->name('show_roles');
+    Route::get('/create_role', [RoleController::class, 'create_role'])->name('create_role');
+    Route::post('/store_role', [RoleController::class, 'store_role'])->name('store_role');
+    Route::post('/edit_role', [RoleController::class, 'edit_role'])->name('edit_role');
+    Route::get('/delete_role/{id}', [RoleController::class, 'delete_role'])->name('delete_role');
+    Route::get('/show_details/{id}', [RoleController::class, 'show_details'])->name('show_details');
+    Route::get('/edit_role/{id}', [RoleController::class, 'edit_role'])->name('edit_role');
+    Route::post('/roles_update', [RoleController::class, 'roles_update'])->name('roles_update');
+    Route::post('/delete_role', [RoleController::class, 'delete_role'])->name('delete_role');
+
+
+    // Route::resource('roles','RoleController');
+    // Route::resource('users','UserController');
+    
+    });
