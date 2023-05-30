@@ -165,7 +165,8 @@ return [
         Spatie\Permission\PermissionServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
         Fx3costa\LaravelChartJs\Providers\ChartjsServiceProvider::class,
-        
+        ArielMejiaDev\LarapexCharts\LarapexChartsServiceProvider::class,
+
         /*
          * Package Service Providers...
          */
@@ -236,6 +237,8 @@ return [
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
+        'Chartjs' => Fx\Chartjs\ChartjsFacade::class,
+        'LarapexChart' => ArielMejiaDev\LarapexCharts\Facades\LarapexChart::class,
 
     ],
 

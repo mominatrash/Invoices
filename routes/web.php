@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LinkController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CustomerReportsController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\InvoiceDetailsController;
 use App\Http\Controllers\InvoicesReportController;
@@ -24,8 +25,8 @@ use App\Http\Controllers\RoleController;
 |
 */
 
-Route::get('/', function () {
-    return view('index');
+Route::get('/home', function () {
+    return view('home');
 })->middleware('auth');
 
 
@@ -33,7 +34,7 @@ Route::get('/', function () {
 Auth::routes();
 
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [HomeController::class, 'home'])->name('home')->middleware('auth');;
 
 
 // Route::get('/{page}', [AdminController::class, 'index']);
@@ -67,11 +68,18 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [HomeController::class, 'home'])->name('home')->middleware('auth');
 
 
 
 Route::group(['middleware' => ['auth']], function () {
+
+
+    Route::get('/home', [HomeController::class, 'home'])->name('home')->middleware('auth');;
+
+
+    
+    
     Route::get('/index', [AdminController::class, 'index'])->name('index')->middleware('auth');
     Route::get('/invoices', [AdminController::class, 'invoices'])->name('invoices')->middleware('permission:الفواتير');
     Route::get('/edit/{id}', [AdminController::class, 'edit'])->name('edit');
@@ -88,7 +96,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/update_invoice/{id}', [InvoiceController::class, 'update_invoice'])->name('update_invoice')->middleware('permission:تعديل الفاتورة');
     Route::post('/delete_invoice', [InvoiceController::class, 'delete_invoice'])->name('delete_invoice')->middleware('permission:حذف الفاتورة');
     Route::get('/show_status/{id}', [InvoiceController::class, 'show_status'])->name('show_status');
-    Route::post('/status_update/{id}', [InvoiceController::class, 'status_update'])->name('status_update')->middleware('permission:تغيير حالة الدفع');
+    Route::post('/status_update/{id}', [InvoiceController::class, 'status_update'])->name('status_update')->middleware('permission:تغير حالة الدفع');
     Route::get('/invoices_paid', [InvoiceController::class, 'invoices_paid_status'])->name('invoices_paid')->middleware('permission:الفواتير المدفوعة');
     Route::get('/invoices_unpaid', [InvoiceController::class, 'invoices_paid_status'])->name('invoices_unpaid')->middleware('permission:الفواتير الغير مدفوعة');
     Route::get('/invoices_paritally_paid', [InvoiceController::class, 'invoices_paid_status'])->name('invoices_paritally_paid')->middleware('permission:الفواتير المدفوعة جزئيا');

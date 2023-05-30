@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Invoice;
 use ArielMejiaDev\LarapexCharts\Facades\LarapexChart;
 use Illuminate\Http\Request;
 
@@ -22,39 +23,78 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
+    public function home()
     {
 
-        $chartjs = app()->chartjs
-        ->name('lineChartTest')
-        ->type('line')
-        ->size(['width' => 400, 'height' => 200])
-        ->labels(['January', 'February', 'March', 'April', 'May', 'June', 'July'])
-        ->datasets([
-            [
-                "label" => "My First dataset",
-                'backgroundColor' => "rgba(38, 185, 154, 0.31)",
-                'borderColor' => "rgba(38, 185, 154, 0.7)",
-                "pointBorderColor" => "rgba(38, 185, 154, 0.7)",
-                "pointBackgroundColor" => "rgba(38, 185, 154, 0.7)",
-                "pointHoverBackgroundColor" => "#fff",
-                "pointHoverBorderColor" => "rgba(220,220,220,1)",
-                'data' => [65, 59, 80, 81, 56, 55, 40],
-            ],
-            [
-                "label" => "My Second dataset",
-                'backgroundColor' => "rgba(38, 185, 154, 0.31)",
-                'borderColor' => "rgba(38, 185, 154, 0.7)",
-                "pointBorderColor" => "rgba(38, 185, 154, 0.7)",
-                "pointBackgroundColor" => "rgba(38, 185, 154, 0.7)",
-                "pointHoverBackgroundColor" => "#fff",
-                "pointHoverBorderColor" => "rgba(220,220,220,1)",
-                'data' => [12, 33, 44, 44, 55, 23, 40],
-            ]
-        ])
-        ->options([]);
-
-
-        return view('index' , compact('chartjs'));
+        $count_all =Invoice::count();
+        $count_invoices1 = Invoice::where('value_status', 1)->count();
+        $count_invoices2 = Invoice::where('value_status', 2)->count();
+        $count_invoices3 = Invoice::where('value_status', 3)->count();
+  
+        if($count_invoices2 == 0){
+            $nspainvoices2=0;
+        }
+        else{
+            $nspainvoices2 = $count_invoices2/ $count_all*100;
+        }
+  
+          if($count_invoices1 == 0){
+              $nspainvoices1=0;
+          }
+          else{
+              $nspainvoices1 = $count_invoices1/ $count_all*100;
+          }
+  
+          if($count_invoices3 == 0){
+              $nspainvoices3=0;
+          }
+          else{
+              $nspainvoices3 = $count_invoices3/ $count_all*100;
+          }
+  
+  
+          $chartjs = app()->chartjs
+              ->name('barChartTest')
+              ->type('bar')
+              ->size(['width' => 350, 'height' => 200])
+              ->labels(['الفواتير الغير المدفوعة', 'الفواتير المدفوعة','الفواتير المدفوعة جزئيا'])
+              ->datasets([
+                  [
+                      "label" => "الفواتير الغير المدفوعة",
+                      'backgroundColor' => ['#ec5858'],
+                      'data' => [$nspainvoices2]
+                  ],
+                  [
+                      "label" => "الفواتير المدفوعة",
+                      'backgroundColor' => ['#3CB371'],
+                      'data' => [$nspainvoices1]
+                  ],
+                  [
+                      "label" => "الفواتير المدفوعة جزئيا",
+                      'backgroundColor' => ['#ff9642'],
+                      'data' => [$nspainvoices3]
+                  ],
+  
+  
+              ])
+              ->options([]);
+  
+  
+          $chartjs_2 = app()->chartjs
+              ->name('pieChartTest')
+              ->type('pie')
+              ->size(['width' => 340, 'height' => 200])
+              ->labels(['الفواتير الغير المدفوعة', 'الفواتير المدفوعة','الفواتير المدفوعة جزئيا'])
+              ->datasets([
+                  [
+                      'backgroundColor' => ['#ec5858', '#3CB371','#ff9642'],
+                      'data' => [$nspainvoices2, $nspainvoices1,$nspainvoices3]
+                  ]
+              ])
+              ->options([]);
+  
+          return view('home', compact('chartjs','chartjs_2'));
+  
     }
+
 }
