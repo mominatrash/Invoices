@@ -67,7 +67,7 @@
 
 
                     <div class="col-lg-3 mg-t-20 mg-lg-t-0">
-                        <label class="rdiobox"><input name="rdio" value="2" type="radio"><span>بحث برقم
+                        <label class="rdiobox"><input name="rdio" value="2" type="radio" ><span>بحث برقم
                                 الفاتورة
                             </span></label>
                     </div><br><br>
@@ -242,11 +242,9 @@
 
 <script>
     $(document).ready(function() {
-
         $('#invoice_number').hide();
-
         $('input[type="radio"]').click(function() {
-            if ($(this).attr('id') == 'type_div') {
+            if ($(this).attr('id') === 'type_div') {
                 $('#invoice_number').hide();
                 $('#type').show();
                 $('#start_at').show();
@@ -260,6 +258,7 @@
         });
     });
 </script>
+
 
 
 @endsection

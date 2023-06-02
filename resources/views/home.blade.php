@@ -189,7 +189,7 @@
                                         if ($count_invoices1 == 0) {
                                             echo $count_invoices1 = 0;
                                         } else {
-                                            echo $count_invoices1 = ($count_invoices1 / $count_all) * 100 . '%';
+                                            echo $count_invoices1 = number_format(($count_invoices1 / $count_all) * 100) . '%';
                                         }
                                     @endphp
                                 </span>

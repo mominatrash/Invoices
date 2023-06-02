@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Models\User;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -41,5 +42,14 @@ class LoginController extends Controller
     protected function credentials(\Illuminate\Http\Request $request)
     {
         return ['email' => $request->email, 'password' => $request->password, 'status' => 'مفعل'];
+
+
+    
+        if ('status' !== 'مفعل') {
+            abort(403, 'تم تعطيل الحساب، يرجى التواصل مع الدعم');
+        }
+    
     }
+    
+    
 }

@@ -25,16 +25,17 @@ use App\Http\Controllers\RoleController;
 |
 */
 
-Route::get('/home', function () {
-    return view('home');
-})->middleware('auth');
+// Route::get('/', function () {
+//     return view('home');
+// })->middleware('auth');
 
 
 
 Auth::routes();
 
 
-Route::get('/home', [HomeController::class, 'home'])->name('home')->middleware('auth');;
+Route::get('/', [HomeController::class, 'home'])->name('home')->middleware('auth');
+Route::get('/home', [HomeController::class, 'home'])->name('home')->middleware('auth');
 
 
 // Route::get('/{page}', [AdminController::class, 'index']);
@@ -104,6 +105,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/archived_invoices', [InvoiceController::class, 'archived_invoices'])->name('archived_invoices')->middleware('permission:ارشيف الفواتير');
     Route::get('/print_invoice/{id}', [InvoiceController::class, 'print_invoice'])->name('print_invoice')->middleware('permission:طباعةالفاتورة');
     Route::get('export', [InvoiceController::class, 'export'])->name('export')->middleware('permission:تصدير EXCEL');
+    Route::get('notification', [InvoiceController::class, 'notification'])->name('notification')->middleware('auth');
 
 
 
@@ -175,6 +177,14 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::get('/customers_reports', [CustomerReportsController::class, 'customers_reports'])->name('customers_reports')->middleware('permission:التقارير');
     Route::post('/search_customers', [CustomerReportsController::class, 'search_customers'])->name('search_customers')->middleware('permission:تقرير العملاء');
+    
+
+
+
+
+
+    Route::get('/MarkAllAsRead', [InvoiceController::class, 'MarkAllAsRead'])->name('MarkAllAsRead');
+    
 
 
     // Route::resource('roles','RoleController');

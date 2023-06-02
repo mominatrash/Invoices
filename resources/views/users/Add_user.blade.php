@@ -2,6 +2,7 @@
 @section('css')
     <!-- Internal Nice-select css  -->
     <link href="{{ URL::asset('assets/plugins/jquery-nice-select/css/nice-select.css') }}" rel="stylesheet" />
+    
 @section('title')
     اضافة مستخدم - مورا سوفت للادارة القانونية
 @stop
@@ -72,23 +73,46 @@
                                 </div>
                             </div>
 
+                            <style>
+                                .selected-value {
+                                    display: inline-block;
+                                    padding: 5px;
+                                    background-color: #f0f0f0;
+                                    margin-right: 5px;
+                                    margin-bottom: 5px;
+                                    border-radius: 3px;
+                                }
+
+                                .remove-value {
+                                    color: #999;
+                                    text-decoration: none;
+                                    margin-left: 5px;
+                                }
+                            </style>
                             <div class="col-md-6">
                                 <label>اسم الدور </label>
                                 <div class="form-group">
-                                    <select class="form-select form-select-lg mb-3 form-control" name="roles_name[]" id="roles_name" aria-label=".form-select-lg example" multiple>
+                                    <select class="form-select form-select-lg mb-3 form-control" name="roles_name[]"
+                                        id="roles_name" aria-label=".form-select-lg example" multiple >
                                         <?php $m = App\Models\Role::all(); ?>
                                         @foreach ($m as $n)
                                             <option value="{{ $n->name }}">{{ $n->name }}</option>
                                         @endforeach
                                     </select>
+                                    <div>
+                                        <label for="selected-values">Selected Values:</label>
+                                        <div id="selected-values">
+                                            <!-- Selected values will be dynamically added here -->
+                                        </div>
+                                    </div>
                                     <span id="roles_name_error" class="text-danger"></span>
                                 </div>
                             </div>
-                            
-                            
-                            
-                            
-                            
+
+
+
+
+
                             <div class="col-md-6">
                                 <label>الحالة </label>
                                 <div class="form-group">
@@ -149,7 +173,7 @@
 <!-- Internal Form-validation js -->
 <script src="{{ URL::asset('assets/js/form-validation.js') }}"></script>
 
-<script>
+{{-- <script>
     var select = document.getElementById('roles_name');
     select.addEventListener('mousedown', function (e) {
         e.preventDefault();
@@ -171,7 +195,34 @@
         });
         select.dispatchEvent(event);
     });
- </script>
+ </script> --}}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+  $('#roles_name').change(function() {
+    var selectedValues = $(this).val();
+    var selectedText = '';
+
+    $('#selected-values').empty();
+
+    if (selectedValues && selectedValues.length > 0) {
+      for (var i = 0; i < selectedValues.length; i++) {
+        selectedText += '<span class="selected-value">' + selectedValues[i] +
+          '<a href="#" class="remove-value">x</a></span>';
+      }
+
+      $('#selected-values').html(selectedText);
+    }
+  });
+
+  $(document).on('click', '.remove-value', function() {
+    $(this).closest('.selected-value').remove();
+  });
+});
+
+</script>
+
 
 
 @endsection

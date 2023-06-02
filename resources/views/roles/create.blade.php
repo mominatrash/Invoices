@@ -8,7 +8,7 @@
 @endsection
 
 @section('title')
-    اضافة الصلاحيات - مورا سوفت للادارة القانونية
+    اضافة الصلاحيات 
 @stop
 
 @section('page-header')
@@ -58,7 +58,7 @@
                         <div class="main-content-label mg-b-5">
                             <div class="col-xs-7 col-sm-7 col-md-7">
                                 <div class="form-group">
-                                    <p><span class="title-highlight">اسم الصلاحية :</span></p>
+                                    <p><span class="title-highlight">اسم الدور :</span></p>
                                     {!! Form::text('name', null, ['class' => 'form-control']) !!}
                                 </div>
                             </div>
@@ -75,7 +75,7 @@
                                             @if ($value->parent == 0)
                                                 <div class="col-xs-12 col-sm-6 col-md-4 mb-4" style="border-style: ridge; padding: 1.5%; background-color: #f0efea; border-radius: 10px; margin-bottom: 20px; width: 80%; max-width: 400px; margin-right: 10px; margin-left: 10px;">
                                                     <label style="font-size: 14px; font-size: 26px;">
-                                                        {{ Form::checkbox('permission[]', $value->id, false, ['class' => 'name', 'data-parent' => $value->name, 'onclick' => 'checkChildPermissions(this)']) }}
+                                                        {{ Form::checkbox('permission[]', $value->id, false, ['class' => 'name', 'data-parent' => $value->name, 'onclick' => 'checkall()']) }}
                                                         <span class="title-highlight">{{ $value->name }}</span>
                                                     </label>
                                                     <br> <br>
@@ -85,11 +85,12 @@
     
                                                     @if ($permissions_chi_cont > 5)
                                                         <div class="row">
-                                                            @foreach ($permissions_chi as $permissions_ch)
+                                                            @foreach ($permissions_chi as $key=>$permissions_ch)
                                                                 <div class="col-md-6">
                                                                     <div style="margin-right: 8%;">
                                                                         <label style="font-size: 14px; color: black;">
-                                                                            {{ Form::checkbox('permission[]', $permissions_ch->id, false, ['class' => 'name', 'data-parent' => $value->name]) }}
+                                                                            {{ Form::checkbox('permission[]', $permissions_ch->id, false, ['class' => 'name', 'data-children' => $value->name,'id'=>
+                                                                            'children','onclick' => "nothing(".$key.")"]) }}
                                                                             {{ $permissions_ch->name }}
                                                                         </label>
                                                                     </div>
@@ -97,10 +98,10 @@
                                                             @endforeach
                                                         </div>
                                                     @else
-                                                        @foreach ($permissions_chi as $permissions_ch)
+                                                        @foreach ($permissions_chi as $key=>$permissions_ch)
                                                             <div style="margin-right: 8%;">
                                                                 <label style="font-size: 14px; color: black;">
-                                                                    {{ Form::checkbox('permission[]', $permissions_ch->id, false, ['class' => 'name', 'data-parent' => $value->name]) }}
+                                                                    {{ Form::checkbox('permission[]', $permissions_ch->id, false, ['class' => 'name', 'data-children' => $value->name,'onclick' => "nothing(".$key.")"]) }}
                                                                     {{ $permissions_ch->name }}
                                                                 </label>
                                                             </div>
@@ -148,45 +149,36 @@
     <script src="{{ URL::asset('assets/plugins/treeview/treeview.js') }}"></script>
 
     <script>
-        var parentCheckboxes = document.querySelectorAll('input[name="permission[]"][data-parent]');
-    
-        for (var i = 0; i < parentCheckboxes.length; i++) {
-            parentCheckboxes[i].addEventListener('change', function() {
-                var parentCheckbox = this;
-                var parentName = parentCheckbox.getAttribute('data-parent');
-                var childPermissions = document.querySelectorAll('input[name="permission[]"][data-parent="' + parentName + '"]');
-    
-                for (var j = 0; j < childPermissions.length; j++) {
-                    childPermissions[j].checked = parentCheckbox.checked;
-                }
-            });
-        }
-    
-        var childCheckboxes = document.querySelectorAll('input[name="permission[]"]:not([data-parent])');
-    
-        for (var k = 0; k < childCheckboxes.length; k++) {
-            childCheckboxes[k].addEventListener('change', function() {
-                var childCheckbox = this;
-                var parentName = childCheckbox.getAttribute('data-parent');
-                var parentCheckbox = document.querySelector('input[name="permission[]"][data-parent="' + parentName + '"]');
-                var siblingCheckboxes = document.querySelectorAll('input[name="permission[]"][data-parent="' + parentName + '"]');
-    
-                if (!childCheckbox.checked) {
-                    parentCheckbox.checked = false;
-                } else {
-                    var allChecked = true;
-                    for (var m = 0; m < siblingCheckboxes.length; m++) {
-                        if (!siblingCheckboxes[m].checked) {
-                            allChecked = false;
-                            break;
-                        }
+
+        
+
+
+   
+            var parentCheckboxes = document.querySelectorAll('input[name="permission[]"][data-parent]');
+            
+            for (var i = 0; i < parentCheckboxes.length; i++) {
+                parentCheckboxes[i].addEventListener('change', function() {
+                    var parentCheckbox = this;
+                    var parentName = parentCheckbox.getAttribute('data-parent');
+                    var childPermissions = document.querySelectorAll('input[name="permission[]"][data-children="' + parentName + '"]');
+
+                    for (var j = 0; j < childPermissions.length; j++) {
+                        childPermissions[j].checked = parentCheckbox.checked;
                     }
-                    if (allChecked) {
-                        parentCheckbox.checked = true;
-                    }
-                }
-            });
-        }
+                })
+            }
+
+
+
+
+         
+        
+
+
+  
+
+
+
     </script>
     
     

@@ -2,23 +2,47 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\InvoicesExport;
 use App\Models\User;
 use App\Models\Invoice;
 use App\Models\Section;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use App\Exports\InvoicesExport;
 use App\Models\Invoice_details;
 use App\Notifications\AddInvoice;
 use Illuminate\Support\Facades\DB;
 use App\Models\Invoice_attachments;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
+
+use App\Notifications\Add_invoice_new;
+use App\Notifications\NewInvoiceNotify;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Notification;
 
 
 class InvoiceController extends Controller
 {
+
+    public function notification()
+    {
+        $user = User::whereJsonContains('roles_name', 'Owner')->orWhere('roles_name', 'Owner')->get();
+        $i = Invoice::latest()->first();
+        $currentDateTime = Carbon::now();
+        $timeAgo = ''; // Declare the variable before the loop
+        foreach (Auth::user()->unreadNotifications as $notification) {
+            $createdAt = $notification->created_at; // Access the created_at property of each notification
+            $timeAgo = $createdAt->diffForHumans($currentDateTime);
+            // Do something with $timeAgo
+        }
+        // Use the $timeAgo variable outside the loop if needed
+        
+        
+        Notification::send($user, new Add_invoice_new($i,$timeAgo));
+         return 1;
+    }
+
+
     public function create_invoice()
     {
 
@@ -52,7 +76,7 @@ class InvoiceController extends Controller
         $i->value_status = "2";
         $i->note = $request->note;
         $i->save();
-    
+
         $invoice_details = new Invoice_details();
         $invoice_details->invoice_id = $i->id;
         $invoice_details->invoice_number = $i->invoice_number;
@@ -63,33 +87,44 @@ class InvoiceController extends Controller
         $invoice_details->note = $i->note;
         $invoice_details->user = $i->user;
         $invoice_details->save();
-    
+
         if ($request->hasFile('attachment')) {
             $image = $request->file('attachment');
             $file_name = $image->getClientOriginalName();
-    
+
             $attachments = new Invoice_attachments();
             $attachments->file_name = $file_name;
             $attachments->invoice_number = $i->invoice_number;
             $attachments->created_by = $i->user;
             $attachments->invoice_id = $i->id;
             $attachments->save();
-    
+
             // move pic
             // $extension = $image->getClientOriginalExtension();
             // $imageName = $file_name . '.' . $extension;
             // $image->move(public_path('Attachments/' . $i->invoice_number), $imageName);
 
-            
-            
+
+
             $imageName = $file_name;
             $image->move(public_path('Attachments/' . $i->invoice_number), $imageName);
-    
-            $inv_mail_id = $i->id;
-            $user = Auth::user();
-            Notification::send($user, new AddInvoice($inv_mail_id));
+
+            // $inv_mail_id = $i->id;
+            // $user = Auth::user();
+            // Notification::send($user, new AddInvoice($inv_mail_id));
+
         }
-    
+
+        $user = Auth::user();
+        $currentDateTime = Carbon::now();
+        $timeAgo = ''; // Declare the variable before the loop
+        foreach (Auth::user()->unreadNotifications as $notification) {
+            $createdAt = $notification->created_at; // Access the created_at property of each notification
+            $timeAgo = $createdAt->diffForHumans($currentDateTime);
+            // Do something with $timeAgo
+        }
+        Notification::send($user, new Add_invoice_new($i, $timeAgo));
+
         session()->flash('Add', 'تم اضافة الفاتورة بنجاح');
         return redirect('/invoices');
     }
@@ -235,8 +270,17 @@ class InvoiceController extends Controller
         return view('invoices.print_invoice', compact('invoices'));
     }
 
-    public function export() 
+    public function export()
     {
-        return Excel::download(new InvoicesExport, 'invoices.xlsx');                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+        return Excel::download(new InvoicesExport, 'invoices.xlsx');
+    }
+
+    public function MarkAllAsRead()
+    {
+        if(Auth::user()->unreadNotifications) {
+
+            Auth::user()->unreadNotifications->markAsRead();
+            return back();
+        }
     }
 }

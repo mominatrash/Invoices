@@ -28,7 +28,7 @@ class  InvoicesReportController extends Controller
                
               $invoices = Invoice::select('*')->where('Status','=',$request->type)->get();
               $type = $request->type;
-              return view('reports.invoices_report',compact('type'))->withDetails($invoices);
+              return view('reports.invoices_report',compact('type', 'rdio'))->withDetails($invoices);
            }
            
            // في حالة تحديد تاريخ استحقاق

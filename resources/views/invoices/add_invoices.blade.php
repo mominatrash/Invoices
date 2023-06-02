@@ -213,6 +213,7 @@
     </script>
 
 <script>
+    
     $(document).ready(function() {
         $('select[name="Section"]').on('change', function() {
             var SectionId = $(this).val();

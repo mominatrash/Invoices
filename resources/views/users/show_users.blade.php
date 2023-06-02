@@ -2,7 +2,7 @@
 @section('css')
 
 @section('title')
-    المستخدمين - مورا سوفت للادارة الفواتير
+    المستخدمين 
 @stop
 
 <!-- Internal Data table css -->
@@ -59,7 +59,7 @@
 
             <div class="card-body">
                 <div class="table-responsive hoverable-table">
-                    <table class="table table-hover" id="example1" data-page-length='50' style=" text-align: center;">
+                    <table class="table table-hover" id="example1" data-page-length='3' style=" text-align: center;">
                         <thead>
                             <tr>
                                 <th class="wd-10p border-bottom-0">#</th>

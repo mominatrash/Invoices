@@ -85,7 +85,7 @@
                                                                 <div class="col-md-6">
                                                                     <div style="margin-right: 8%;">
                                                                         <label style="font-size: 14px; color: black;">
-                                                                            {{ Form::checkbox('permission[]', $permissions_ch->id, in_array($permissions_ch->id, $rolePermissions) ? true : false, ['class' => 'name', 'data-parent' => $value->name]) }}
+                                                                            {{ Form::checkbox('permission[]', $permissions_ch->id, in_array($permissions_ch->id, $rolePermissions) ? true : false, ['class' => 'name', 'data-children' => $value->name]) }}
                                                                             {{ $permissions_ch->name }}
                                                                         </label>
                                                                     </div>
@@ -96,7 +96,7 @@
                                                         @foreach ($permissions_chi as $permissions_ch)
                                                             <div style="margin-right: 8%;">
                                                                 <label style="font-size: 14px; color: black;">
-                                                                    {{ Form::checkbox('permission[]', $permissions_ch->id, in_array($permissions_ch->id, $rolePermissions) ? true : false, ['class' => 'name', 'data-parent' => $value->name]) }}
+                                                                    {{ Form::checkbox('permission[]', $permissions_ch->id, in_array($permissions_ch->id, $rolePermissions) ? true : false, ['class' => 'name', 'data-children' => $value->name]) }}
                                                                     {{ $permissions_ch->name }}
                                                                 </label>
                                                             </div>
@@ -132,4 +132,40 @@
 @section('js')
 <!-- Internal Treeview js -->
 <script src="{{ URL::asset('assets/plugins/treeview/treeview.js') }}"></script>
+
+
+<script>
+
+        
+
+
+   
+    var parentCheckboxes = document.querySelectorAll('input[name="permission[]"][data-parent]');
+    
+    for (var i = 0; i < parentCheckboxes.length; i++) {
+        parentCheckboxes[i].addEventListener('change', function() {
+            var parentCheckbox = this;
+            var parentName = parentCheckbox.getAttribute('data-parent');
+            var childPermissions = document.querySelectorAll('input[name="permission[]"][data-children="' + parentName + '"]');
+
+            for (var j = 0; j < childPermissions.length; j++) {
+                childPermissions[j].checked = parentCheckbox.checked;
+            }
+        });
+    }
+
+
+
+
+ 
+
+
+
+
+
+
+
+</script>
+
+
 @endsection

@@ -107,6 +107,11 @@
                 <a href="/create_invoice" class="modal-effect btn btn-sm btn-primary" style="color:white"><i
                         class="fas fa-plus"></i>&nbsp; اضافة فاتورة</a>
 
+
+                        <a href="/notification" class="modal-effect btn btn-sm btn-primary" style="color:white"><i
+                                class="fas fa-plus"></i>&nbsp; ارسال اشعار</a>
+                        
+                                
                         <a class="modal-effect btn btn-sm btn-primary" href="{{ url('export') }}"
                         style="color:white"><i class="fas fa-file-download"></i>&nbsp;تصدير اكسيل</a>
 

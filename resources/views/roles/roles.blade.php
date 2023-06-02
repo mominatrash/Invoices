@@ -99,7 +99,7 @@
                                             href="{{ route('edit_role', $role->id) }}">تعديل</a>
 
 
-                                        @if ($role->name !== 'owner')
+                                        @if ($role->name !== 'Owner')
                                             {!! Form::open(['method' => 'POST', 'route' => ['delete_role', $role->id], 'style' => 'display:inline']) !!}
                                             {!! Form::hidden('role_id', $role->id) !!}
                                             {!! Form::submit('حذف', ['class' => 'btn btn-danger btn-sm']) !!}
